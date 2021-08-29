@@ -1,5 +1,7 @@
 package com.library.aritic.HitApi;
 
+import android.util.Log;
+
 import com.library.aritic.ApiService.ApiService_InApp;
 import com.library.aritic.ApiService.ApiService_InAppEvent;
 import com.library.aritic.Data.Model.Request.InAppEventRequest;
@@ -35,18 +37,22 @@ public class HitApiInAppMessaging {
                                 objectId,
                                 event
         );
-
+        log("Making API call for MessageId:" + objectId + ",for Event: " + event);
         Call<InAppEventResponse> call = apiService.getInAppEventResponse(inAppEventRequest);
         call.enqueue(new Callback<InAppEventResponse>() {
             @Override
             public void onResponse(Call<InAppEventResponse> call, Response<InAppEventResponse> response) {
-                        System.out.println("InApp event : " + response.body().getMessage());
+               log("Response "  + response.body().getMessage());
             }
 
             @Override
             public void onFailure(Call<InAppEventResponse> call, Throwable t) {
-
+                log("Response Failure "  + t.getMessage());
             }
         });
+    }
+
+    public void log(String msg) {
+        Log.w("InApp Page : ", msg);
     }
 }

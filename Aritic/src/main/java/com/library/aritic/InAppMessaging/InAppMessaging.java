@@ -93,27 +93,21 @@ public class InAppMessaging {
             public void onResponse(Call<InappResponse2> call, Response<InappResponse2> response) {
 //                            log("Response " + response.toString());
                 inAppResponse = response.body();
-                log("inApp Response " + inAppResponse.getSuccess());
+
 //
                 if(inAppResponse!=null && inAppResponse.getData().getShowInAppMessage()){
 //                    position = inAppResponse.getData().getInAppMessage().getPosition();
-                    position = CARD_BOTTOM;
+                    position = CARD_TOP;
                     String MessageId = inAppResponse.getData().getInAppMessage().getMessageId();
-//                                                String backgroundColor = inAppResponse.getData().getInAppMessage().getBackground().getColor();
-//                                                String firstObjectType = inAppResponse.getData().getInAppMessage().getMessageTemplate().get(0).getType();
-//                                                String firstObjectTitle = inAppResponse.getData().getInAppMessage().getMessageTemplate().get(0).getProperties().getText();
-                    Log.d("position " , position);
-                    Log.d("MessageId " , MessageId);
-//                                                Log.d("backgroundColor " , backgroundColor);
-//                                                Log.d("firstObjectType " , firstObjectType);
-//                                                Log.d("firstObjectTitle " , firstObjectTitle);
+                    log("Message Id " + MessageId);
+//
                     showDialogBox();
                 }
             }
             @Override
             public void onFailure(Call<InappResponse2> call, Throwable t) {
-                log("On Failure");
-                log("aritic library : error on getting inApp message" + t);
+                log("On Failure response");
+
             }
         });
     }
@@ -139,30 +133,28 @@ public class InAppMessaging {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) dialog.getLayoutParams();
             layoutParams.gravity = Gravity.TOP;
             layoutParams.width = MATCH_PARENT;
+            handleCancelButtonClick(cancelButton);
 //            buildCenterDialog(dialog);
         }
         if (position.equals(CARD_BOTTOM)) {
             FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) dialog.getLayoutParams();
             layoutParams.gravity = Gravity.BOTTOM;
             layoutParams.width = MATCH_PARENT;
+            handleCancelButtonClick(cancelButton);
         }
         if (position.equals(CARD_CENTER)) {
             handleCancelButtonClick(cancelButton);
-            log("Building Center Dialog");
             buildCenterDialog(dialog);
         }
     }
     public void reportMetrics() {
         metrics = context.getResources().getDisplayMetrics();
-        log("densityDPI" + metrics.densityDpi);
-        log("density" + metrics.density);
-        log("real width  pixels" + metrics.widthPixels);
-        log("real height pixels" + metrics.heightPixels);
+
 
     }
 
     public void log(String msg) {
-        Log.w("Log: ", msg);
+        Log.w("InApp Page : ", msg);
     }
 
     private void buildCenterDialog(View dialog) {
@@ -177,7 +169,7 @@ public class InAppMessaging {
         for (int i = 0; i < arrangementType.length; i++) {
             switch (arrangementType[i]) {
                 case "title":
-                    Log.d("TAG", "Adding Title");
+
                     addTitleToDialog(dialog, getTypeProperTies(i), CARD_CENTER);
                     break;
                 case "image":
@@ -189,7 +181,7 @@ public class InAppMessaging {
             }
         }
         List<com.library.aritic.Data.Model.Response.InAppResponseNew.Button> buttonsToAdd = inAppResponse.getData().getInAppMessage().getButtons();
-        log("Buttins Size response " + inAppResponse.getData().getInAppMessage().getButtons().size());
+
         for (int i = 0; i < buttonsToAdd.size(); i++) {
             addButtonToDialog(dialog,buttonsToAdd.get(i), CARD_CENTER);
         }
@@ -221,7 +213,7 @@ public class InAppMessaging {
         for (int i = 0; i < arrangementType.length; i++) {
             switch (arrangementType[i]) {
                 case "title":
-                    Log.d("TAG", "Adding Title");
+
                     addTitleToDialog(dialog, getTypeProperTies(i), CARD_FULLSCREEN);
                     break;
                 case "image":
@@ -263,7 +255,7 @@ public class InAppMessaging {
 
     private void addImageToDialog(View d, Properties p, String viewType) {
         ImageView i  = new ImageView(context);
-        log("Adding image");
+
         int dim = (int) (viewType.equals(CARD_CENTER)?metrics.widthPixels * 0.4: metrics.widthPixels*0.6);
         Picasso.get()
                 .load(p.getImageURL())
@@ -299,9 +291,10 @@ public class InAppMessaging {
             @Override
             public void onClick(View view) {
                 if(p.getActionRedirectType().equals(CLOSE_DIALOG)) {
-                    // This is a close button
+
 
                 } else {
+                    log("Button Clicked");
                     handleButtonClick("Clicked",p.getActionRedirectType(),p.getActionValue());
                 }
             }
@@ -314,7 +307,6 @@ public class InAppMessaging {
     private void addTitleToDialog(View d, Properties p, String viewType) {
         TextView title = new TextView(context);
         LinearLayout l;
-        log("View Type" + viewType);
         if(viewType.equals(CARD_CENTER)) {
             l = d.findViewById(R.id.linear_layout_dialog_center);
         } else {
@@ -430,7 +422,7 @@ public class InAppMessaging {
         HitApiInAppMessaging hitApiInAppMessaging = new HitApiInAppMessaging();
         String currentMessageId = inAppResponse.getData().getInAppMessage().getMessageId();
         hitApiInAppMessaging.hitApi(currentMessageId, "clicked");
-        log("Button Action Click" + actionRedirectType + " Value " + actionValue);
+
         if(actionRedirectType.equals("web")) {
             log("Redirecting web");
             redirectUserToUrl(actionValue);
@@ -470,4 +462,10 @@ public class InAppMessaging {
     private void ThrowError () {
 
     }
+
+
+
+
+
+
 }
