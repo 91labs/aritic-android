@@ -1,0 +1,70 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
+android {
+
+    compileSdkVersion 30
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.example.arcticproject"
+        minSdkVersion 24
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+
+    ext {
+        currentFirebaseVersion = "22.0.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.3.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation project(path: ':Aritic')
+    implementation 'com.google.firebase:firebase-analytics:19.0.0'
+    implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    implementation platform('com.google.firebase:firebase-bom:28.2.1')
+}
+
+/*
+dependencies {
+    implementation('com.your.library:YourLibrary:1.0@aar') {
+        transitive = true
+        // Use the consuming application's FireBase module, so exclude it
+        // from the dependency. (not totally necessary if you use compileOnly
+        // when declaring the dependency in the library project).
+        exclude group: 'com.google.firebase'
+        // Exclude the "plain java" json module to fix build warnings.
+        exclude group: 'org.json', module: 'json'
+    }
+
+    implementation("com.google.firebase:firebase-messaging:$currentFirebaseVersion") {
+        // Exclude the "plain java" json module to fix build warnings.
+        exclude group: 'org.json', module: 'json'
+    }
+}
+
+// Needs to be at the bottom of file.
+ */

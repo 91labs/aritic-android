@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "309930272851",
+    "project_id": "aritic-app",
+    "storage_bucket": "aritic-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:309930272851:android:9a7a54e47c218395ef3ea6",
+        "android_client_info": {
+          "package_name": "com.example.arcticproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "309930272851-a2l7nc72qi872qka005eis450bchkpqp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.arcticproject",
+            "certificate_hash": "fdf6e048403696a798473ace98c3b382287919ba"
+          }
+        },
+        {
+          "client_id": "309930272851-hv2hdh9chjqgvconea5uurs3np9b3793.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi2mNgzivZbAL0smSmVDboGrjapd19fxE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "309930272851-hv2hdh9chjqgvconea5uurs3np9b3793.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
