@@ -20,18 +20,17 @@ import java.util.List;
 public class ConfigureDialog {
 
     public void configureTitle(TextView title, InappResponse2 inAppResponse){
-        String titleText = "";
-        if(inAppResponse.getData().
-                getInAppMessage().
-                getMessageTemplate().size()>=1){
-                    titleText =inAppResponse.getData().
-                    getInAppMessage().
-                    getMessageTemplate().
-                    get(0).
-                    getProperties().
-                    getText();}
 
-        title.setText(titleText);
+       Properties p = getTitle(inAppResponse);
+        title.setText(p.getText());
+//        title.setText("Hurry Get 50! off on Purchases NOW! what is this was a big Title what would do?");
+        title.setTextSize(Float.parseFloat(p.getTextSize()));
+        title.setPadding(0,20,0,20);
+        // TODO: send Propoer Hex Color Code
+        title.setTextColor(Color.parseColor("#FFFFFF"));
+//                    title.setBackgroundColor(Color.parseColor(p.getBgColor()));
+
+
     }
 
     public void configureBackground(View dialog, InappResponse2 inAppResponse){
@@ -83,7 +82,7 @@ public class ConfigureDialog {
         List<MessageTemplate> messageTemplate = inAppResponse.getData().getInAppMessage().getMessageTemplate();
         String[] arrangementTypes = new String[messageTemplate.size()];
         for(int i =0;i < messageTemplate.size();i++) {
-            if(messageTemplate.get(i).getType().equals("image")) {
+            if(messageTemplate.get(i).getType().equals("title")) {
                 return inAppResponse.getData().getInAppMessage().getMessageTemplate().get(i).getProperties();
             };
         }
@@ -125,6 +124,7 @@ public class ConfigureDialog {
 
     public static void configureCenterCardTitle(TextView title, Properties p, LinearLayout l) {
         title.setText(p.getText());
+//        title.setText("Hurry Get 50! off on Purchases NOW! what is this was a big Title what would do?");
         title.setTextSize(Float.parseFloat(p.getTextSize()));
         title.setGravity(Gravity.CENTER);
         title.setPadding(0,20,0,20);
@@ -136,7 +136,7 @@ public class ConfigureDialog {
     }
 
     public static void configureButtons(Button viewButton, com.library.aritic.Data.Model.Response.InAppResponseNew.Button p, LinearLayout l) {
-        viewButton.setText("hello");
+//        viewButton.setText("hello");
         viewButton.setText(p.getName());
         viewButton.setTextSize(Float.parseFloat(p.getTextSize()));
         viewButton.setGravity(Gravity.CENTER);

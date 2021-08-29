@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements Aritic.AriticRegi
         aritic.register(this);
         aritic.setListener(this);
 //        aritic.registerUser(this, "nandhakumar1411@gmail.comm", "1234567", "+917022242471");
+
         /** incase user wants to register with email, phone details
          *
          *  aritic.register(this, email, userId, phone)

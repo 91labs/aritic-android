@@ -2,6 +2,7 @@ package com.library.aritic.InAppMessaging;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -95,8 +96,8 @@ public class InAppMessaging {
                 log("inApp Response " + inAppResponse.getSuccess());
 //
                 if(inAppResponse!=null && inAppResponse.getData().getShowInAppMessage()){
-                    position = inAppResponse.getData().getInAppMessage().getPosition();
-//                    position = CARD_BOTTOM;
+//                    position = inAppResponse.getData().getInAppMessage().getPosition();
+                    position = CARD_BOTTOM;
                     String MessageId = inAppResponse.getData().getInAppMessage().getMessageId();
 //                                                String backgroundColor = inAppResponse.getData().getInAppMessage().getBackground().getColor();
 //                                                String firstObjectType = inAppResponse.getData().getInAppMessage().getMessageTemplate().get(0).getType();
@@ -167,10 +168,9 @@ public class InAppMessaging {
     private void buildCenterDialog(View dialog) {
         String[] arrangementType = getArrangementType();
         LinearLayout l = dialog.findViewById(R.id.linear_layout_dialog_center);
-        l.setMinimumWidth((int) (metrics.widthPixels*0.6));
-        l.setMinimumWidth((int) (metrics.widthPixels*0.6));
-        l.setGravity(Gravity.CENTER);
-         log("Dialog params inLL center" + l.getLayoutParams().toString());
+        l.setMinimumWidth((int) (metrics.widthPixels*0.8));
+        setBackground(dialog,l, R.id.dialog_cardCenter);
+
 
 //       l.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         String s = arrangementType[0] + arrangementType[1] + arrangementType[2];
@@ -197,9 +197,21 @@ public class InAppMessaging {
 
     }
 
+    private void setBackground(View dialog, LinearLayout l, int Id) {
+        // First check if imageURL exits
+        String imageURL = inAppResponse.getData().getInAppMessage().getBackground().getImageURL();
+        String bgColor = inAppResponse.getData().getInAppMessage().getBackground().getColor();
+        if(imageURL.equals("") || imageURL.isEmpty()) {
+            // TODO: no image URL exist set background color as Background
+            l.setBackgroundColor(Color.parseColor("#36353F"));
+            dialog.findViewById(Id).setBackgroundColor(Color.parseColor("#36353F"));
+        }
+    }
+
     private void buildFullScreenDialog(View dialog) {
         String[] arrangementType = getArrangementType();
-        LinearLayout l = dialog.findViewById(R.id.linear_layout_dialog_fullscreen);
+        LinearLayout l = dialog.findViewById(R.id.full_screen_inner);
+        setBackground(dialog,l,R.id.dialog_cardFullscreen);
 //        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
 //                MATCH_PARENT, MATCH_PARENT);
 //        layoutParams.setMargins(30, 20, 30, 30);
@@ -240,7 +252,7 @@ public class InAppMessaging {
             l = d.findViewById(R.id.linear_layout_dialog_center);
             ConfigureDialog.configureCenterCardSubTitle(title,p,l);
         } else {
-            l = d.findViewById(R.id.linear_layout_dialog_fullscreen);
+            l = d.findViewById(R.id.full_screen_inner);
             ConfigureDialog.configureCenterCardSubTitle(title,p,l);
         }
 
@@ -252,10 +264,11 @@ public class InAppMessaging {
     private void addImageToDialog(View d, Properties p, String viewType) {
         ImageView i  = new ImageView(context);
         log("Adding image");
+        int dim = (int) (viewType.equals(CARD_CENTER)?metrics.widthPixels * 0.4: metrics.widthPixels*0.6);
         Picasso.get()
                 .load(p.getImageURL())
                 .centerCrop()
-                .resize((int) (metrics.widthPixels * 0.4), (int)(metrics.widthPixels * 0.4))
+                .resize(dim,dim)
                 .into(i);
         i.setPadding(0,20,0,20);
         LinearLayout l;
@@ -263,7 +276,7 @@ public class InAppMessaging {
             l = d.findViewById(R.id.linear_layout_dialog_center);
             l.addView(i);
         } else {
-            l = d.findViewById(R.id.linear_layout_dialog_fullscreen);
+            l = d.findViewById(R.id.full_screen_inner);
             l.addView(i);
         }
 
@@ -277,7 +290,7 @@ public class InAppMessaging {
             l = d.findViewById(R.id.linear_layout_dialog_center);
             ConfigureDialog.configureButtons(b,p,l);
         } else {
-            l = d.findViewById(R.id.linear_layout_dialog_fullscreen);
+            l = d.findViewById(R.id.full_screen_inner);
             ConfigureDialog.configureButtons(b,p,l);
         }
 
@@ -305,7 +318,7 @@ public class InAppMessaging {
         if(viewType.equals(CARD_CENTER)) {
             l = d.findViewById(R.id.linear_layout_dialog_center);
         } else {
-            l = d.findViewById(R.id.linear_layout_dialog_fullscreen);
+            l = d.findViewById(R.id.full_screen_inner);
         }
 
         ConfigureDialog.configureCenterCardTitle(title,p,l);
@@ -317,12 +330,7 @@ public class InAppMessaging {
         if (position.equals(CARD_FULLSCREEN)) {
             View dialog = LayoutInflater.from(context).inflate(R.layout.dialog_fullscreen, null);
             dialogView = dialog.findViewById(R.id.dialog_cardFullscreen);
-//            title = (TextView) dialog.findViewById(R.id.textView_titleFullscreen);
-//            subtitle = (TextView) dialog.findViewById(R.id.textView_messageFullscreen);
-//            positiveButton = (Button) dialog.findViewById(R.id.button_positiveFullscreen);
             cancelButton = (ImageButton) dialog.findViewById(R.id.button_cancelFullscreen);
-//            advertisementImage = (ImageView) dialog.findViewById(R.id.imageView_adImageFullscreen);
-//            setupDialogConfiguration(dialog);
             return dialog;
         }
 
@@ -340,11 +348,15 @@ public class InAppMessaging {
             title = (TextView) dialog.findViewById(R.id.textView_title);
             subtitle = (TextView) dialog.findViewById(R.id.textView_message);
             advertisementImage = (ImageView) dialog.findViewById(R.id.imageView_advertisementImage);
+            cancelButton = (ImageButton) dialog.findViewById(R.id.button_cancel);
             setupDialogConfiguration(dialog);
             return dialog;
         }
         return null;
     }
+
+
+    /** This function is used only to set Up configuration for Top or Bottom Dialog Box **/
 
     private void setupDialogConfiguration (View dialog) {
         ConfigureDialog configureDialog = new ConfigureDialog();
@@ -353,22 +365,6 @@ public class InAppMessaging {
                         else set Configuration from the response API
 
                  */
-
-
-        if (position.equals(CARD_FULLSCREEN)) {
-            configureDialog.configureImage(advertisementImage, inAppResponse, 1000);
-            configureDialog.configureTitle(title, inAppResponse);
-            configureDialog.configureSubtitle(subtitle, inAppResponse);
-            configureDialog.configureButtons(positiveButton, inAppResponse);
-            configureDialog.configureBackground(dialog, inAppResponse);
-        }
-        if (position.equals(CARD_CENTER)) {
-//                                configureDialog.configureImage(advertisementImage, inAppResponse, 600);
-//                                configureDialog.configureTitle(title, inAppResponse);
-//                                configureDialog.configureSubtitle(subtitle, inAppResponse);
-//                                configureDialog.configureButtons(positiveButton, inAppResponse);
-//                                configureDialog.configureBackground(dialog, inAppResponse);
-        }
         if (position.equals(CARD_TOP)) {
             configureDialog.configureImage(advertisementImage, inAppResponse, 200);
             configureDialog.configureTitle(title, inAppResponse);
