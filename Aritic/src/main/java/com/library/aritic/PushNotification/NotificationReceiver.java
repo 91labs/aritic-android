@@ -13,10 +13,11 @@ import com.library.aritic.HitApi.HitApiPushNotification;
 public class NotificationReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
-        int push_id = intent.getIntExtra("push_id", 0);
-//        intent.getDataString()
-        Log.d("DS", intent.getDataString());
-        Log.d("ACTION", intent.getAction());
+        int push_id = intent.getIntExtra("push_id",-1);
+        log("Push Id: " + push_id);
+      log("Action " + intent.getAction());
+
+
         String isCancelled = intent.getAction();
         if(isCancelled.equals("push_cancelled")){
             handlePushCancelled(push_id, context);
@@ -26,9 +27,13 @@ public class NotificationReceiver extends BroadcastReceiver {
         }
 
     }
+    public void log(String msg) {
+
+    }
+
+
 
     private void handlePushClicked(int push_id, Context context) {
-        System.out.println("Aritic library : notification clicked");
         HitApiPushNotification hitApiPushNotification = new HitApiPushNotification();
         hitApiPushNotification.hitApi(push_id, "clicked");
 

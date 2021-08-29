@@ -1,5 +1,7 @@
 package com.library.aritic.HitApi;
 
+import android.util.Log;
+
 import com.library.aritic.ApiService.ApiService_InAppEvent;
 import com.library.aritic.ApiService.ApiService_PushEvent;
 import com.library.aritic.Data.Model.Request.PushNotificationEventRequest;
@@ -33,19 +35,24 @@ public class HitApiPushNotification {
                 "push",
                                 objectId,
                                 event);
-
+        log("Push Message API  hitting for: " +objectId + " for the event: " + event);
         Call<PushNotificationEventResponse> call = apiService.getPushEventResponse(pushNotificationEventRequest);
         call.enqueue(new Callback<PushNotificationEventResponse>() {
             @Override
             public void onResponse(Call<PushNotificationEventResponse> call, Response<PushNotificationEventResponse> response) {
                                     System.out.println(" Push Notification : " + response.body().getMessage());
+                                    log("Respinsesuccess" + response.message());
             }
 
             @Override
             public void onFailure(Call<PushNotificationEventResponse> call, Throwable t) {
-
+                log("Respinsesuccess" + t.getMessage());
             }
         });
+    }
+
+    public void log(String msg) {
+        Log.d("PUSHAPI : ", msg);
     }
 
 }

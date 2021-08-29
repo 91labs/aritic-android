@@ -45,34 +45,29 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(@NonNull @NotNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        Log.d("PUSH", "message Received");
-        if(!remoteMessage.getData().isEmpty())
-            testTitle = remoteMessage.getData().get("title");
-            System.out.println("datapayload : " + testTitle);
-            sendNotification(remoteMessage);
+        log("Push Message Received ");
+        sendNotification(remoteMessage);
     }
 
     private void sendNotification(RemoteMessage remoteMessage) {
 //        int push_id = Integer.parseInt(
 //                Objects.requireNonNull(remoteMessage.getData().get("push_id")));
-        int push_id  = 1231123;
-        Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
-        broadcastIntent.putExtra("push_id",push_id );
+        log("Remote MessageId " + remoteMessage.getMessageId());
+        int push_id  = 123123;
+        log("Push ID " + push_id);
 
-        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
-                0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_baseline_coffee_24)
-                .setContentTitle(remoteMessage.getData().get("title"))
-                .setContentText(remoteMessage.getData().get("message"))
-                .setContentIntent(actionIntent)
-                .setDeleteIntent(getDeleteIntent(this))
+                .setContentTitle(remoteMessage.getNotification().getTitle())
+                 .setSmallIcon(R.drawable.common_google_signin_btn_icon_dark)
+                .setContentText(remoteMessage.getNotification().getBody())
+                .setContentIntent(getActionIntent(this,push_id))
+                .setDeleteIntent(getDeleteIntent(this, push_id))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setAutoCancel(true);
-
+        log("Notiifcation building");
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         // Since android Oreo notification channel is needed.
@@ -87,9 +82,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 notificationBuilder.build());
     }
 
-    private PendingIntent getDeleteIntent(Context context) {
+    private PendingIntent getDeleteIntent(Context context, int push_id) {
         Intent intent = new Intent(context, NotificationReceiver.class);
         intent.setAction("push_cancelled");
+        intent.putExtra("push_id", push_id);
         return PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+    }
+
+    private PendingIntent getActionIntent(Context context, int push_id) {
+        Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
+        broadcastIntent.putExtra("push_id", push_id);
+        broadcastIntent.setAction("push_clicked");
+        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
+                0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return actionIntent;
+    }
+
+    public void log(String msg) {
+        Log.d("PUSH : ", msg);
     }
 }
