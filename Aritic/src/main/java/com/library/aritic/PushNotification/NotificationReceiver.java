@@ -15,9 +15,7 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int push_id = intent.getIntExtra("push_id",-1);
         log("Push Id: " + push_id);
-      log("Action " + intent.getAction());
-
-
+        log("Action " + intent.getAction());
         String isCancelled = intent.getAction();
         if(isCancelled.equals("push_cancelled")){
             handlePushCancelled(push_id, context);
@@ -25,7 +23,6 @@ public class NotificationReceiver extends BroadcastReceiver {
         else{
             handlePushClicked(push_id, context);
         }
-
     }
     public void log(String msg) {
 

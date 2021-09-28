@@ -6,6 +6,7 @@ import com.library.aritic.ApiService.ApiService_InAppEvent;
 import com.library.aritic.ApiService.ApiService_PushEvent;
 import com.library.aritic.Data.Model.Request.PushNotificationEventRequest;
 import com.library.aritic.Data.Model.Response.PushNotificationEventResponse.PushNotificationEventResponse;
+import com.library.aritic.SharedPref.SharedPref;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,7 +25,7 @@ public class HitApiPushNotification {
     private void setupRetrofit() {
         // TODO : another url will come here
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://sprint.ctrmv.com/")
+                .baseUrl(SharedPref.getValue("base_url"))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         apiService = retrofit.create(ApiService_PushEvent.class);

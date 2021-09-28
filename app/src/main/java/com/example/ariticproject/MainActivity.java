@@ -22,9 +22,10 @@ public class MainActivity extends AppCompatActivity implements Aritic.AriticRegi
         setContentView(R.layout.activity_main);
         context = this;
         aritic = Aritic.getInstance();
+        aritic.setAppURL(this, "https://sprint.ctrmv.com/");
         aritic.register(this);
         aritic.setListener(this);
-//        aritic.registerUser(this, "nandhakumar1411@gmail.comm", "1234567", "+917022242471");
+//        aritic.registerUser(this, "nandhakumar1411@gmail.commm", "12345678", "70222412471");
 
         /** incase user wants to register with email, phone details
          *

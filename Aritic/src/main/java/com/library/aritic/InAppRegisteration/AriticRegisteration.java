@@ -60,7 +60,7 @@ public class AriticRegisteration {
 
         private void setupRetrofit() {
                 Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(" https://sprint.ctrmv.com/")
+                        .baseUrl(SharedPref.getValue("base_url"))
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
@@ -80,11 +80,18 @@ public class AriticRegisteration {
                 call.enqueue(new Callback<UserResponse>() {
                         @Override
                         public void onResponse(Call<UserResponse> call, Response<UserResponse> response) {
-                            Log.d("Register :  " , "Register Happened" + response.toString());
+                            // TODO: Response Parser
+//                            if(response.body()) {
+                                listener.onRegisterSuccessFull();
+//                            }
+//                            listener.onRegisterSuccessFull();;
+
                         }
                         @Override
                         public void onFailure(Call<UserResponse> call, Throwable t) {
                             Log.d("Register :  " , "Register Did not Happen");
+                            // TODO: Error Code
+                            listener.onRegisterFailure(t.getLocalizedMessage());
                         }
                 });
         }

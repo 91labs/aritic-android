@@ -1,4 +1,4 @@
-package com.library.aritic.Util.ConfigureDialog;
+package com.library.aritic.Util.Util;
 
 import android.graphics.Color;
 import android.view.Gravity;
@@ -12,8 +12,6 @@ import com.library.aritic.Data.Model.Response.InAppResponseNew.InappResponse2;
 import com.library.aritic.Data.Model.Response.InAppResponseNew.MessageTemplate;
 import com.library.aritic.Data.Model.Response.InAppResponseNew.Properties;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 

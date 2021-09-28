@@ -32,29 +32,29 @@ public class PushNotification {
     public void setTokenListener(tokenListener listener) {
         this.listener = listener;
     }
-    public void subscribeToTopic(String topic){
-        FirebaseMessaging.getInstance().subscribeToTopic(topic)
-                .addOnCompleteListener(task -> {
-                        if(task.isSuccessful()){
-                            System.out.println("Successfully subscribed to "+topic);
-                        }
-                        else {
-                            System.out.println("Cannot subscribe to "+topic);
-                        }
-                });
-    }
-
-    public void unsubscribeFromTopic(String topic){
-        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
-                .addOnCompleteListener(task -> {
-                    if(task.isSuccessful()){
-                        System.out.println("Successfully unsubscribed from "+topic);
-                    }
-                    else {
-                        System.out.println("Cannot unsubscribe from "+topic);
-                    }
-                });
-    }
+//    public void subscribeToTopic(String topic){
+//        FirebaseMessaging.getInstance().subscribeToTopic(topic)
+//                .addOnCompleteListener(task -> {
+//                        if(task.isSuccessful()){
+//                            System.out.println("Successfully subscribed to "+topic);
+//                        }
+//                        else {
+//                            System.out.println("Cannot subscribe to "+topic);
+//                        }
+//                });
+//    }
+//
+//    public void unsubscribeFromTopic(String topic){
+//        FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+//                .addOnCompleteListener(task -> {
+//                    if(task.isSuccessful()){
+//                        System.out.println("Successfully unsubscribed from "+topic);
+//                    }
+//                    else {
+//                        System.out.println("Cannot unsubscribe from "+topic);
+//                    }
+//                });
+//    }
 
     public void getFcmToken() {
 

@@ -28,6 +28,10 @@
             </intent-filter>
         </service>
 
+
+        <meta-data android:name="com.aritic.PushServiceExtension"
+            android:value="com.example.ariticproject.clientFirebaseReceiever" />
+
     </application>
 
 </manifest>

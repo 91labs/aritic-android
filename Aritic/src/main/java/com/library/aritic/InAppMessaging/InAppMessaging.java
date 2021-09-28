@@ -25,7 +25,8 @@ import com.library.aritic.Data.Model.Response.InAppResponseNew.MessageTemplate;
 import com.library.aritic.Data.Model.Response.InAppResponseNew.Properties;
 import com.library.aritic.HitApi.HitApiInAppMessaging;
 import com.library.aritic.R;
-import com.library.aritic.Util.ConfigureDialog.ConfigureDialog;
+import com.library.aritic.SharedPref.SharedPref;
+import com.library.aritic.Util.Util.ConfigureDialog;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -77,7 +78,7 @@ public class InAppMessaging {
     private void setupRetrofit() {
         Retrofit retrofit = new Retrofit.Builder()
                 // TODO(" Change the API ")
-                .baseUrl("https://sprint.ctrmv.com/")
+                .baseUrl(SharedPref.getValue("base_url"))
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -96,8 +97,8 @@ public class InAppMessaging {
 
 //
                 if(inAppResponse!=null && inAppResponse.getData().getShowInAppMessage()){
-//                    position = inAppResponse.getData().getInAppMessage().getPosition();
-                    position = CARD_TOP;
+                    position = inAppResponse.getData().getInAppMessage().getPosition();
+//                    position = CARD_TOP;
                     String MessageId = inAppResponse.getData().getInAppMessage().getMessageId();
                     log("Message Id " + MessageId);
 //
