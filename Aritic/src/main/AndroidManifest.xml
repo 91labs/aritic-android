@@ -11,6 +11,9 @@
             </intent-filter>
         </activity>
         <receiver android:name=".PushNotification.NotificationReceiver" />
+        <receiver
+            android:name=".PushNotification.ActionReceiver"
+            android:enabled="true" />
     </application>
 
 </manifest>

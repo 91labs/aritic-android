@@ -8,11 +8,11 @@ import androidx.annotation.Nullable;
 import com.library.aritic.InAppMessaging.InAppMessaging;
 import com.library.aritic.InAppRegisteration.AriticRegisteration;
 import com.library.aritic.PushNotification.AriticRemoteMessage;
-import com.library.aritic.PushNotification.MyFirebaseMessagingService;
+import com.library.aritic.PushNotification.MessagingService;
 import com.library.aritic.PushNotification.PushNotification;
 import com.library.aritic.SharedPref.SharedPref;
 
-public class Aritic implements MyFirebaseMessagingService.AriticPushListener{
+public class Aritic implements MessagingService.AriticPushListener{
 
         private static Aritic single_instance = null;
 
@@ -20,7 +20,7 @@ public class Aritic implements MyFirebaseMessagingService.AriticPushListener{
 
     private AriticRegistrationStatus listener;
     static AriticPushHandler remoteNotificationReceivedHandler;
-    private MyFirebaseMessagingService mService;
+    private MessagingService mService;
 
     public static Aritic getInstance() {
                 if (single_instance == null) {
@@ -40,7 +40,7 @@ public class Aritic implements MyFirebaseMessagingService.AriticPushListener{
 
         }
 
-        public void pauseInApp(Context context) {
+        public void pauseInApp() {
                 SharedPref.setInAppDisplayBoolean(false);
         }
 
@@ -78,7 +78,7 @@ public class Aritic implements MyFirebaseMessagingService.AriticPushListener{
                         }
                 });
                 if(isSet) {
-                    mService = new MyFirebaseMessagingService();
+                    mService = new MessagingService();
                     mService.setPushListener(this);
                 }
                 // Generates FCM Token

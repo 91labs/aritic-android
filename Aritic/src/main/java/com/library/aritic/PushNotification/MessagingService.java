@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MyFirebaseMessagingService extends FirebaseMessagingService implements AriticRemoteMessage.MessageCallbacks {
+public class MessagingService extends FirebaseMessagingService implements AriticRemoteMessage.MessageCallbacks {
 
     private static final String ACTION_BUTTON_CLICKED = "actionButtonClicked";
     private static final String ACTION_BUTTON_DISMISSED = "actionButtonDismissed";
@@ -71,6 +71,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         super.onMessageReceived(remoteMessage);
         log("Received PushMessage from Firebase");
         AriticRemoteMessage message = new AriticRemoteMessage(remoteMessage);
+        message.setMessageCallbacks(this);
 
         if(pushListener != null) {
             pushListener.onPushMessageReceived(message);
@@ -114,31 +115,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     private  void showNotification(RemoteMessage remoteMessage) {
 //        int push_id = Integer.parseInt(
 //                Objects.requireNonNull(remoteMessage.getData().get("push_id")));
-        log("Remote MessageId " + remoteMessage.getMessageId());
-        int push_id  = 123123;
-        log("Push ID " + push_id);
+        if(!validateRemoteMessage(remoteMessage)) {
+            AriticLogger.Log("Not a valid message");
+//            return throw new Exception("Invalid Message Format");
+        }
+        JSONObject notifObject = getNotifObject(remoteMessage);
+        int push_id  = notifObject.optInt("pushId");
 
+        String title = notifObject.optString("title");
+        String sub = notifObject.optString("subTitle");
+        String smallIcon = notifObject.optString("smallIcon");
 
+        String largeIcon = notifObject.optString("largeImage");
 
+        channelId = notifObject.optString("channeId");
         NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, remoteMessage.getNotification().getChannelId())
-                .setContentTitle(remoteMessage.getNotification().getTitle())
-                .setSmallIcon(getDrawableId(remoteMessage.getNotification().getIcon()))
-                .setLargeIcon(getLargeIcon(remoteMessage.getNotification().getImageUrl().toString()))
-                .setContentText(remoteMessage.getNotification().getBody())
+                new NotificationCompat.Builder(this, channelId)
+                .setContentTitle(title)
+                .setSmallIcon(getDrawableId(smallIcon))
+                .setLargeIcon(getLargeIcon(largeIcon))
+                .setContentText(sub)
                 .setContentIntent(getActionIntent(this,push_id))
                 .setDeleteIntent(getDeleteIntent(this, push_id))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setAutoCancel(true);
 
-            String data = "{\"notificationId\":312,\"actionButtons\":[{\"id\":123123,\"name\":\"Button1\",\"action\":\"https://someLink\"},{\"id\":211,\"name\":\"Button2\",\"action\":\"https://someLink\"}],\"moreData\":\"moreDataHere\"}";
-//            addActionButtons(notificationBuilder,remoteMessage.getData().toString());
-          addActionButtons(notificationBuilder, data);
+        String actionButtons = notifObject.optString("actionButtons");
+        addActionButtons(notificationBuilder, actionButtons, push_id);
 
-
-
-
+        channelId = notifObject.optString("channeId");
         log("Notiifcation building");
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
@@ -154,36 +160,43 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
                 notificationBuilder.build());
     }
 
+    private JSONObject getNotifObject(RemoteMessage remoteMessage) {
+        Map<String, String> mapObj = remoteMessage.getData();
+        JSONObject dataObj = new JSONObject(mapObj);
+        return dataObj;
+    }
+
+    private boolean validateRemoteMessage(RemoteMessage remoteMessage) {
+        Map<String, String> mapObj = remoteMessage.getData();
+        JSONObject dataObj = new JSONObject(mapObj);
+        if(dataObj == null || ! dataObj.has("pushId")) {
+            return false;
+        }
+        return true;
+    }
+
 //    http://localhost:5000/?token=d1uZHNAiQ427Le1d3G3GDj:APA91bGUpQnEQJTVTzscJrsqVU0y-PZmbQsR_lqwY8Qzw5nSZAEYy_Bo47MdEKH3ZpB54WEZpvzVNSK5Mvd8M__XmLsb22MQTamU8vEuK93BFB1V_4zYPfpwp0lCR6eVc7NQL9OIsL7_
 
-    private void addActionButtons(NotificationCompat.Builder notificationBuilder, String data) {
+    private void addActionButtons(NotificationCompat.Builder notificationBuilder, String data, int pushId) {
         try {
-            JSONObject customJson = new JSONObject(data);
 
-            int notificationId = 0;
-            if(customJson.has("notificationId")) {
-                throw new IllegalAccessException("NotificationId is missing");
-            }
-
-            notificationId = customJson.getInt("notificationId");
-
-            if (!customJson.has("actionButtons"))
-                return;
-
-            JSONArray buttons = customJson.optJSONArray("actionButtons");
+//            JSONArray buttons = obj.optJSONArray("actionButtons");
+            JSONArray buttons = new JSONArray(data);
 
             for (int i = 0; i < buttons.length(); i++) {
-                JSONObject button = buttons.optJSONObject(i);
 
-                Intent buttonIntent = getNewBaseIntent(notificationId,button.optInt("id"), button.optString("actionURI"));
-                buttonIntent.putExtra("action_button", true);
-                PendingIntent buttonPIntent = getNewActionPendingIntent(notificationId, buttonIntent);
+                JSONObject button = buttons.optJSONObject(i);
+                int buttonId = button.optInt("id");
+                log("Button Id to passing Intenr" + buttonId);
+                PendingIntent buttonIntent = getNewBaseIntent(pushId,buttonId, button.optString("actionValue"));
+//                buttonIntent.putExtra("action_button", true);
+//                PendingIntent buttonPIntent = getNewActionPendingIntent(pushId, buttonIntent);
 
                 int buttonIcon = 0;
                 if (button.has("icon"))
-                    buttonIcon = getResourceIcon(button.optString("icon"));
+                    buttonIcon = getDrawableId(button.optString("icon"));
 
-                notificationBuilder.addAction(buttonIcon, button.optString("text"), buttonPIntent);
+                notificationBuilder.addAction(buttonIcon, button.optString("name"), buttonIntent);
             }
         } catch (Throwable t) {
             t.printStackTrace();
@@ -238,13 +251,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         return PendingIntent.getActivity(this, requestCode, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private  Intent getNewBaseIntent(int notificationId, int buttonId, String actionURI) {
-        return new Intent(this, NotificationReceiver.class)
-                .putExtra(BUNDLE_KEY_ANDROID_NOTIFICATION_ID, notificationId)
-                .putExtra(ACTION_BUTTON_ID, buttonId)
-                .putExtra(ACTION_URI, actionURI)
-                .setAction(ACTION_BUTTON_CLICKED)
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    private  PendingIntent getNewBaseIntent(int notificationId, int buttonId, String actionURI) {
+        log("getting base Intent for PushId" + notificationId + ", ButtoniD: " + buttonId);
+        Intent broadcastIntent = new Intent(this, ActionReceiver.class);
+        broadcastIntent.putExtra(BUNDLE_KEY_ANDROID_NOTIFICATION_ID, notificationId);
+        broadcastIntent.setAction("BUTTON_CLICK");
+        broadcastIntent.putExtra(ACTION_URI, actionURI);
+        broadcastIntent.putExtra(ACTION_BUTTON_ID, buttonId);
+        return PendingIntent.getBroadcast(this,
+                0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getDeleteIntent(Context context, int push_id) {
@@ -258,20 +273,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
         Intent broadcastIntent = new Intent(this, NotificationReceiver.class);
         broadcastIntent.putExtra("push_id", push_id);
         broadcastIntent.setAction("push_clicked");
-        PendingIntent actionIntent = PendingIntent.getBroadcast(this,
+        return PendingIntent.getBroadcast(this,
                 0, broadcastIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        return actionIntent;
     }
 
     public void log(String msg) {
-        Log.d("PUSH : ", msg);
+        Log.d("ARITIC : ", msg);
     }
 
     @Override
     public void showPushMessage(AriticRemoteMessage message) {
         if(message != null) {
             RemoteMessage msg = message.getRemoteMessage();
-            buildNotification(message.getRemoteMessage());
+//            buildNotification(message.getRemoteMessage());
+            showNotification(message.getRemoteMessage());
         } else {
             // Message has been Sent as Null,
             // do not do any thing
@@ -315,7 +330,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
     }
 
     private void attachActionButtons() {
-
+        String data = "{\"notificationId\":312,\"actionButtons\":[{\"id\":123123,\"name\":\"Button1\",\"action\":\"https://someLink\"},{\"id\":211,\"name\":\"Button2\",\"action\":\"https://someLink\"}],\"moreData\":\"moreDataHere\"}";
     }
 
 
@@ -337,7 +352,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService impleme
 
         if (trimmedName.startsWith("http://") || trimmedName.startsWith("https://"))
             return getBitmapFromURL(trimmedName);
-
+        AriticLogger.Log("getting Bitmap from Local");
         return getBitmapFromAssetsOrResourceName(name);
     }
 

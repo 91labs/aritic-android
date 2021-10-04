@@ -22,6 +22,11 @@ public class HitApiPushNotification {
         sendRequestToApi(objectId, event);
     }
 
+    public void hitButtonClickApi(int objectId, String event, int buttonId){
+        setupRetrofit();
+        sendButtonRequestToApi(objectId, event, buttonId);
+    }
+
     private void setupRetrofit() {
         // TODO : another url will come here
         Retrofit retrofit = new Retrofit.Builder()
@@ -43,6 +48,29 @@ public class HitApiPushNotification {
             public void onResponse(Call<PushNotificationEventResponse> call, Response<PushNotificationEventResponse> response) {
                                     System.out.println(" Push Notification : " + response.body().getMessage());
                                     log("Respinsesuccess" + response.message());
+            }
+
+            @Override
+            public void onFailure(Call<PushNotificationEventResponse> call, Throwable t) {
+                log("Respinsesuccess" + t.getMessage());
+            }
+        });
+    }
+
+
+
+    private void sendButtonRequestToApi(int objectId, String event, int buttonId) {
+        PushNotificationEventRequest pushNotificationEventRequest = new PushNotificationEventRequest(
+                "push",
+                objectId,
+                event, buttonId);
+        log("Push Message API  hitting for: " +objectId + " for the event: " + event);
+        Call<PushNotificationEventResponse> call = apiService.getPushEventResponse(pushNotificationEventRequest);
+        call.enqueue(new Callback<PushNotificationEventResponse>() {
+            @Override
+            public void onResponse(Call<PushNotificationEventResponse> call, Response<PushNotificationEventResponse> response) {
+                System.out.println(" Push Notification : " + response.body().getMessage());
+                log("Respinsesuccess" + response.message());
             }
 
             @Override

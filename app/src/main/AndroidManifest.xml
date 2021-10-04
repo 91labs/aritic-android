@@ -21,7 +21,7 @@
         </activity>
 
         <service
-            android:name="com.library.aritic.PushNotification.MyFirebaseMessagingService"
+            android:name="com.library.aritic.PushNotification.MessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

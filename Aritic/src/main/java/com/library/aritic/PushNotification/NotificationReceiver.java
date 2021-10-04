@@ -8,6 +8,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationManagerCompat;
 
+import com.library.aritic.AriticLogger;
 import com.library.aritic.HitApi.HitApiPushNotification;
 
 public class NotificationReceiver extends BroadcastReceiver {
@@ -15,17 +16,18 @@ public class NotificationReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         int push_id = intent.getIntExtra("push_id",-1);
         log("Push Id: " + push_id);
+        log("Inside Notification Receiver");
         log("Action " + intent.getAction());
-        String isCancelled = intent.getAction();
-        if(isCancelled.equals("push_cancelled")){
-            handlePushCancelled(push_id, context);
-        }
-        else{
-            handlePushClicked(push_id, context);
-        }
+//        String isCancelled = intent.getAction();
+//        if(isCancelled.equals("push_cancelled")){
+//            handlePushCancelled(push_id, context);
+//        }
+//        else{
+//            handlePushClicked(push_id, context);
+//        }
     }
     public void log(String msg) {
-
+        AriticLogger.Log(msg);
     }
 
 

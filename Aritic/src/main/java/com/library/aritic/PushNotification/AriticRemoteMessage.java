@@ -10,6 +10,7 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.library.aritic.AriticLogger;
 import com.library.aritic.R;
 
 import org.json.JSONObject;
@@ -80,10 +81,13 @@ public class AriticRemoteMessage{
         if(message != null) {
             // Nobody did anyting.
             // show the message
+            AriticLogger.Log("Callbacks is there");
+
             mCallbacks.showPushMessage(message);
 
         } else {
             // Message has been Sent as Null,
+            AriticLogger.Log("No Callbacks");
             // do not do any thing
         }
 
