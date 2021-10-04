@@ -1,5 +1,6 @@
 plugins {
     id 'com.android.library'
+    id 'maven-publish'
 }
 
 android {
@@ -47,5 +48,26 @@ dependencies {
     compileOnly("com.google.firebase:firebase-messaging:$currentFirebaseVersion") {
         exclude group: 'org.json', module: 'json'
     }
+
+
     implementation 'com.squareup.picasso:picasso:2.71828'
+
 }
+//
+//afterEvaluate {
+
+//    publishing {
+//        publications {
+//            // Creates a Maven publication called "release".
+//            release(MavenPublication) {
+//                // Applies the component for the release build variant.
+//                from components.release
+//
+//                // You can then customize attributes of the publication as shown below.
+//                groupId = 'com.library.aritic'
+//                artifactId = 'Aritic'
+//                version = '1.0'
+//            }
+//        }
+//    }
+//}
