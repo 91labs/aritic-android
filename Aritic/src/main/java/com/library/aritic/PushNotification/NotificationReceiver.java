@@ -18,13 +18,13 @@ public class NotificationReceiver extends BroadcastReceiver {
         log("Push Id: " + push_id);
         log("Inside Notification Receiver");
         log("Action " + intent.getAction());
-//        String isCancelled = intent.getAction();
-//        if(isCancelled.equals("push_cancelled")){
-//            handlePushCancelled(push_id, context);
-//        }
-//        else{
-//            handlePushClicked(push_id, context);
-//        }
+        String isCancelled = intent.getAction();
+        if(isCancelled.equals("push_cancelled")){
+            handlePushCancelled(push_id, context);
+        }
+        else{
+            handlePushClicked(push_id, context);
+        }
     }
     public void log(String msg) {
         AriticLogger.Log(msg);

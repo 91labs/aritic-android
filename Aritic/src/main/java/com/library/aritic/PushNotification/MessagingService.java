@@ -112,7 +112,7 @@ public class MessagingService extends FirebaseMessagingService implements Aritic
 
     }
 
-    private  void showNotification(RemoteMessage remoteMessage) {
+    public  void showNotification(RemoteMessage remoteMessage) {
 //        int push_id = Integer.parseInt(
 //                Objects.requireNonNull(remoteMessage.getData().get("push_id")));
         if(!validateRemoteMessage(remoteMessage)) {
@@ -129,11 +129,15 @@ public class MessagingService extends FirebaseMessagingService implements Aritic
         String largeIcon = notifObject.optString("largeImage");
 
         channelId = notifObject.optString("channeId");
+        Bitmap largeIconBitmap = getLargeIcon(largeIcon);
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                 .setContentTitle(title)
                 .setSmallIcon(getDrawableId(smallIcon))
-                .setLargeIcon(getLargeIcon(largeIcon))
+                .setLargeIcon(largeIconBitmap)
+                .setStyle(new NotificationCompat.BigPictureStyle()
+                        .bigPicture(largeIconBitmap)
+                        .bigLargeIcon(null))
                 .setContentText(sub)
                 .setContentIntent(getActionIntent(this,push_id))
                 .setDeleteIntent(getDeleteIntent(this, push_id))

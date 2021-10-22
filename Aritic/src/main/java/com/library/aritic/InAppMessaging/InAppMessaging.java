@@ -406,9 +406,15 @@ public class InAppMessaging {
             // Some Addition Customisations, If Required
         }
             swipeDismissDialog.show();
+             hitApiOnShowed(msgId, "shown");
     }
 
     private void hitApiOnCancelled(String objectId, String event) {
+        HitApiInAppMessaging hitApiInAppMessaging = new HitApiInAppMessaging();
+        hitApiInAppMessaging.hitApi(objectId, event);
+    }
+
+    private void hitApiOnShowed(String objectId, String event) {
         HitApiInAppMessaging hitApiInAppMessaging = new HitApiInAppMessaging();
         hitApiInAppMessaging.hitApi(objectId, event);
     }

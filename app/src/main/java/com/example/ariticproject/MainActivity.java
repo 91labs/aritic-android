@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements Aritic.AriticRegi
         aritic.resumeInAppMessages();
         aritic.register(this);
         aritic.setListener(this);
-        aritic.pauseInApp();
+//        aritic.pauseInApp();
 
 //        aritic.registerUser(this, "nandhakumar1411@gmail.commm", "12345678", "70222412471");
 
